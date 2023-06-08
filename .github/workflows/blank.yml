@@ -31,9 +31,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            /usr/local/.ghcup/
+            /usr/local/.ghcup/ghc/${{ env.version_ghc }}
+            /usr/local/.ghcup/bin/cabal-${{ env.version_cabal }}
           key: setup-${{ env.version_ghc }}-${{ env.version_cabal }}
-          restore-keys: ${{ runner.os }}-
 
       - name: Setup haskell tools
         if: ${{ steps.cache_usr_local.outputs.cache-hit != 'true' }}
