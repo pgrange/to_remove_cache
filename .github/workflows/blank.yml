@@ -36,7 +36,6 @@ jobs:
           key: setup-${{ env.version_ghc }}-${{ env.version_cabal }}
 
       - name: Setup haskell tools
-        if: ${{ steps.cache_usr_local.outputs.cache-hit != 'true' }}
         run: |
           ghcup install ghc 8.10.7
           ghcup set ghc 8.10.7
