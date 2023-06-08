@@ -21,9 +21,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: |
-          ls -l /usr/local
-
       - uses: actions/checkout@v3
 
       - name: Cache /usr/local
@@ -43,14 +40,13 @@ jobs:
           ghcup install ghc 8.10.7
           ghcup set ghc 8.10.7
 
-      - name: Cache ~/.cabal/packages, ~/.cabal/store and dist-newstyle
+      - name: Cache cabal storage
         id: cache_cabal
         uses: actions/cache@v3
         with:
           path: |
             ~/.cache/cabal/packages
             ~/.local/state/cabal
-            dist-newstyle
           key: ${{ runner.os }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
           restore-keys: ${{ runner.os }}-
 
@@ -58,6 +54,15 @@ jobs:
         if: ${{ steps.cache_cabal.outputs.cache-hit != 'true' }}
         run: |
           cabal update
+
+      - name: Cache cabal compilation directory
+        id: cache_dist
+        uses: actions/cache@v3
+        with:
+          path: |
+            dist-newstyle
+          key: ${{ runner.os }}-dist-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-dist-
 
       - name: cabal build
         run: |
