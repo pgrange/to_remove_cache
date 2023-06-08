@@ -33,9 +33,12 @@ jobs:
           path: |
             /usr/local/.ghcup/ghc/${{ env.version_ghc }}
             /usr/local/.ghcup/bin/cabal-${{ env.version_cabal }}
+            /usr/local/.ghcup/bin/cabal
+            /usr/local/.ghcup/bin/ghc
           key: setup-${{ env.version_ghc }}-${{ env.version_cabal }}
 
       - name: Setup haskell tools
+        if: ${{ steps.cache_usr_local.outputs.cache-hit != 'true' }}
         run: |
           ghcup install ghc 8.10.7
           ghcup set ghc 8.10.7
