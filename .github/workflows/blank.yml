@@ -21,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: |
+          ls -l /usr/local
+
       - uses: actions/checkout@v3
 
       - name: Cache /usr/local
