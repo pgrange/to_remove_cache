@@ -1,0 +1,49 @@
+name: 'Hello World'
+description: 'Greet someone'
+runs:
+  using: "composite"
+  steps:
+      - name: Cache /usr/local
+        id: cache_usr_local
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/.ghcup/ghc/${{ env.version_ghc }}
+            /usr/local/.ghcup/bin/cabal-${{ env.version_cabal }}
+            /usr/local/.ghcup/bin/cabal
+            /usr/local/.ghcup/bin/ghc
+          key: setup-${{ env.version_ghc }}-${{ env.version_cabal }}
+
+      - name: Setup haskell tools
+        if: ${{ steps.cache_usr_local.outputs.cache-hit != 'true' }}
+        shell: bash
+        run: |
+          ghcup install ghc 8.10.7
+          ghcup set ghc 8.10.7
+
+      - name: Cache cabal storage
+        id: cache_cabal
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/cabal/packages
+            ~/.local/state/cabal
+          key: ${{ runner.os }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
+          restore-keys: ${{ runner.os }}-
+
+      - name: cabal update
+        if: ${{ steps.cache_cabal.outputs.cache-hit != 'true' }}
+        shell: bash
+        run: |
+          cabal update
+
+      - name: Cache cabal compilation directory
+        id: cache_dist
+        uses: actions/cache@v3
+        with:
+          path: |
+            dist-newstyle
+          key: ${{ runner.os }}-dist-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-dist-
+
+
