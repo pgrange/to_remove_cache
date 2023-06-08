@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            /usr/local/
+            /usr/local/.ghcup/
           key: setup-${{ env.version_ghc }}-${{ env.version_cabal }}
           restore-keys: ${{ runner.os }}-
 
