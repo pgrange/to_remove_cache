@@ -44,7 +44,7 @@ jobs:
           ghcup set ghc 8.10.7
 
       - name: Cache ~/.cabal/packages, ~/.cabal/store and dist-newstyle
-        id: cache
+        id: cache_cabal
         uses: actions/cache@v3
         with:
           path: |
@@ -54,7 +54,11 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
           restore-keys: ${{ runner.os }}-
 
-      - name: cabal build
+      - name: cabal update
+        if: ${{ steps.cache_cabal.outputs.cache-hit != 'true' }}
         run: |
           cabal update
+
+      - name: cabal build
+        run: |
           cabal build all
