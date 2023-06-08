@@ -24,16 +24,16 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.cabal/packages
-            ~/.cabal/store
+            ~/.cache/cabal/packages
+            ~/.local/state/cabal
             dist-newstyle
           key: ${{ runner.os }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
           restore-keys: ${{ runner.os }}-
 
-      - name: "Check cabal install"
-        if: ${{ steps.cache.outputs.cache-hit == 'true' }}
-        run: |
-          find ~/.cabal -type f
+#       - name: "Check cabal install"
+#         if: ${{ steps.cache.outputs.cache-hit == 'true' }}
+#         run: |
+#           find ~/.cabal -type f
 
       - name: Setup tools
         run: |
@@ -44,10 +44,3 @@ jobs:
         run: |
           cabal update
           cabal build all
-
-      - name: "Check cabal install"
-        run: |
-          cat ~/.config/cabal/config
-          find ~/ -type f
-
-
